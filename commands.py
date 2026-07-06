@@ -3,7 +3,9 @@
 `args[0]` is the command name; `args[1:]` are its arguments. The HANDLERS table
 + dispatch() turn a parsed command into the right handler.
 """
-from resp import simple_string, error, integer, bulk_string
+import fnmatch
+
+from resp import simple_string, error, integer, bulk_string, array
 
 
 def _wrong_args(name):
@@ -68,6 +70,28 @@ def cmd_incr(store, args):
         return error(f"ERR {e}")
 
 
+def cmd_keys(store, args):
+    # KEYS pattern — glob-style matching, like real Redis (KEYS rl:*)
+    if len(args) != 2:
+        return _wrong_args("keys")
+    return array([k for k in store.keys() if fnmatch.fnmatch(k, args[1])])
+
+
+def cmd_type(store, args):
+    if len(args) != 2:
+        return _wrong_args("type")
+    return simple_string("string" if store.exists(args[1]) else "none")
+
+
+def cmd_persist(store, args):
+    return integer(store.persist(args[1])) if len(args) == 2 else _wrong_args("persist")
+
+
+def cmd_flushdb(store, args):
+    store.flush()
+    return simple_string("OK")
+
+
 def cmd_command(store, args):
     return b"*0\r\n"   # redis-cli sends COMMAND DOCS on connect; ack with empty array
 
@@ -76,6 +100,7 @@ HANDLERS = {
     "PING": cmd_ping, "ECHO": cmd_echo,
     "SET": cmd_set, "GET": cmd_get, "DEL": cmd_del, "EXISTS": cmd_exists,
     "EXPIRE": cmd_expire, "TTL": cmd_ttl, "INCR": cmd_incr,
+    "KEYS": cmd_keys, "TYPE": cmd_type, "PERSIST": cmd_persist, "FLUSHDB": cmd_flushdb,
     "COMMAND": cmd_command,
 }
 

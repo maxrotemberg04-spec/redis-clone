@@ -79,3 +79,11 @@ def bulk_string(s) -> bytes:
         return b"$-1\r\n"                         # null bulk string ("no value")
     data = s.encode() if isinstance(s, str) else s
     return b"$" + str(len(data)).encode() + CRLF + data + CRLF
+
+
+def array(items) -> bytes:
+    """RESP array of bulk strings (what KEYS returns)."""
+    out = b"*" + str(len(items)).encode() + CRLF
+    for item in items:
+        out += bulk_string(item)
+    return out

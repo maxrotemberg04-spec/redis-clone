@@ -37,7 +37,8 @@ def handle_client(conn: socket.socket, addr, store: Store) -> None:
 
 
 def main() -> None:
-    store = Store()                             # ONE store shared by all clients
+    store = Store(sweep_interval=0.5)           # ONE store shared by all clients
+    #                                             (active expiry sweeps twice/sec)
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind((HOST, PORT))
