@@ -6,7 +6,7 @@ Each user gets a counter key that self-destructs when the window ends:
     allowed = count <= limit
 
 This exact pattern runs (in-process) inside my llm-gateway to cap free users
-at 5 requests/week — and it's how my production app's coach message caps work.
+at 5 requests/week — and it's how my production app's message caps work.
 
 Usage:  python server.py                    (terminal 1)
         python examples/rate_limiter.py     (terminal 2)

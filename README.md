@@ -56,7 +56,7 @@ request 1: ALLOW  (window resets in 10s)
 ...
 request 6: DENY   (window resets in 10s)
 ```
-This exact pattern runs inside my [llm-gateway](https://github.com/maxrotemberg04-spec/llm-gateway) to cap free-tier AI usage — and it's how **my production app** (my AI running coach) enforces coach message limits.
+This exact pattern runs inside my [llm-gateway](https://github.com/maxrotemberg04-spec/llm-gateway) to cap free-tier AI usage — and it's how my production AI coaching app enforces its message limits.
 
 ## How it's built
 | File | Responsibility |
